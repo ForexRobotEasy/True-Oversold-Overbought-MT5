@@ -1,0 +1,58 @@
+mql5
+//+------------------------------------------------------------------+
+//|                                              True Oversold Overbought MT5               |
+//|                                      https://forexroboteasy.com |
+//|                                      Developed by Forex Robot Easy Team |
+//+------------------------------------------------------------------+
+
+// Define currency pairs
+string[] symbolList = {'NZDCHF', 'GBPAUD', 'GBPNZD', 'GBPCAD', 'GBPUSD', 'NZDJPY', 'USDJPY', 'CHFJPY'};
+
+// Main function
+void OnTick()
+{
+    // Check if there are multiple currency pairs to test
+    if(symbolList.Length > 1)
+    {
+        // Loop through each symbol in the list
+        for(int i=0; i<symbolList.Length; i++)
+        {
+            // Call the trading function for each symbol
+            Trade(symbolList[i]);
+        }
+    }
+    else
+    {
+        // Only one currency pair to test
+        Trade(symbolList[0]);
+    }
+}
+
+// Trading function
+void Trade(string symbol)
+{
+    // Check if the symbol is supported
+    if(SymbolInfoDouble(symbol, SYMBOL_BID) != 0)
+    {
+        // Implement your trading strategy here
+        // ...
+        // ...
+        
+        // Example: Buy if oversold, sell if overbought
+        double oversoldLevel = 30;
+        double overboughtLevel = 70;
+        
+        if(iRSI(symbol, PERIOD_CURRENT, 14, PRICE_CLOSE, 0) < oversoldLevel)
+        {
+            // Execute buy order
+            OrderSend(symbol, OP_BUY, 0.01, SymbolInfoDouble(symbol, SYMBOL_BID), 0, 0, 0, 'Oversold');
+        }
+        else if(iRSI(symbol, PERIOD_CURRENT, 14, PRICE_CLOSE, 0) > overboughtLevel)
+        {
+            // Execute sell order
+            OrderSend(symbol, OP_SELL, 0.01, SymbolInfoDouble(symbol, SYMBOL_ASK), 0, 0, 0, 'Overbought');
+        }
+    }
+}
+
+//+------------------------------------------------------------------+
